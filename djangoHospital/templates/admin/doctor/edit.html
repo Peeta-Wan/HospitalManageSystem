@@ -1,0 +1,242 @@
+{% extends '../../base.html' %}
+{% block title %}{% endblock %}
+{% block content %}
+    <body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <form class="layui-form">
+                {% csrf_token %}
+                <div class="layui-form-item">
+                    <div class="layui-col-xs6">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>username
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="username" value="{{ info.username }}" required=""
+                                   lay-verify="required"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>Unique username to log in
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs6">
+                        <label class="layui-form-label">
+                            Full Name
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="realname" value="{{ info.realname }}" required=""
+                                   lay-verify="name"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-col-xs6">
+                        <label class="layui-form-label">
+                            Phone
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="telephone" value="{{ info.telephone }}" required=""
+                                   lay-verify="phone"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+                    <div class="layui-col-xs6">
+                        <label class="layui-form-label">
+                           Email
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="email" value="{{ info.email }}" required="" lay-verify="email"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-col-xs6">
+                        <label class="layui-form-label">
+                           Adress
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="address" value="{{ info.address }}" required=""
+                                   lay-verify="required"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-xs6">
+                        <label class="layui-form-label">
+                            Gender
+                        </label>
+                        <div class="layui-input-inline">
+                            <select name="gender" lay-verify="required">
+                                <option value=""></option>
+                                <option value="1" {% if info.gender == 1 %} selected {% endif %}>Male</option>
+                                <option value="2" {% if info.gender == 2 %} selected {% endif %}>Female</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-col-xs12">
+                        <div class="layui-col-xs6">
+                            <label class="layui-form-label">
+                                Avatar
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="avatar" value="{{ info.avatar }}" id="avatar" readonly
+                                       autocomplete="off" class="layui-input">
+                            </div>
+                            <button type="button" class="layui-btn" id="test1">select file</button>
+                            <a href="/upload/temp/{{ info.avatar }}" target="_blank">view</a>
+                        </div>
+                        <div class="layui-col-xs6">
+
+                            <label class="layui-form-label"><span class="x-red">*</span>Account Status</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="status" value="1" lay-skin="primary" title="Available"
+                                        {% if info.status == 1 %} checked {% endif %}>
+                                <input type="radio" name="status" value="0" lay-skin="primary" title="Unavailable"
+                                        {% if info.status == 0 %} checked {% endif %}>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <button class="layui-btn" lay-filter="edit" lay-submit="">
+                        Edit
+                    </button>
+                </div>
+                <input type="hidden" name="id" value="{{ info.id }}">
+            </form>
+        </div>
+    </div>
+
+    </body>
+    <script>
+
+        layui.use(['form', 'layer', 'upload'], function () {
+            $ = layui.jquery;
+            var form = layui.form,
+                upload = layui.upload,
+                layer = layui.layer;
+
+
+        form.verify({
+            pass: [
+                /^[\S]{6,}$/
+                , 'Password cannot be less than 6 digits and cannot contain spaces.'
+            ]
+            , content: function (value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+        form.verify({
+            email: [
+                /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+                , 'Email format is wrong.'
+            ]
+            , content: function (value) {
+                layedit.sync(editIndex);
+            }
+        });
+        form.verify({
+            phone: [
+                /^(07\d{9}|447\d{9})$/
+                , 'Phone format is wrong, should be 07x-xxx-xxxx or 447x-xxx-xxxx.'
+            ]
+            , content: function (value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+        form.verify({
+            name: [
+                /^[^\d]+$/
+                , 'Name cannot contain numbers.'
+            ]
+            , content: function (value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+            var uploadInst = upload.render({
+                elem: '#test1'
+                {#, exts: '*'#}
+                , url: '/admin/upload/index.html' //改成您自己的上传接口
+                , before: function (obj) {
+                }
+                , done: function (res) {
+
+                    if (res.state == 1) {
+                        $("#avatar").val(res.name);
+                        return layer.msg('upload success');
+                    }
+
+                }
+                , error: function () {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">upload error</span> <a class="layui-btn layui-btn-xs demo-reload">retry</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
+
+
+            form.on('submit(edit)', function (data) {
+                console.log(data);
+
+                $.ajax({
+                    url: "update.html",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data.field,
+                    success: function (res) {
+                        {#console.log(res)#}
+                        if (res.state == 1) {
+                            layer.msg(res.msg, {icon: 1}, function () {
+
+                                xadmin.close();
+
+                                xadmin.father_reload();
+                            });
+                        } else {
+                            layer.msg(res.msg, {icon: 5}, function () {
+                            });
+                        }
+                    },
+                    error: function (res) {
+                        //called when there is an error
+                        layer.msg('Network connection failed. Please try again later', {icon: 2}, function () {
+                        });
+                    }
+                });
+
+                return false;
+            });
+
+        });
+    </script>
+{% endblock %}
